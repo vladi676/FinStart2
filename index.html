@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FinStart - AI Mobile & Desktop Banking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #F9F7C9;
+            --teal-accent: #80BCBD;
+            --dark-slate: #132E35;
+            --card-bg: #1E3E45;
+            --card-surface: #17343B;
+            --text-light: #F1F5F9;
+            --text-muted: #94A3B8;
+            --green-glow: #34D399;
+            --red-alert: #F87171;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #08161A;
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Responsive Wrapper */
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            max-height: 900px;
+            background-color: var(--dark-slate);
+            border-radius: 28px;
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid rgba(128, 188, 189, 0.2);
+            position: relative;
+        }
+
+        /* Desktop Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: rgba(19, 46, 53, 0.95);
+            border-right: 1px solid rgba(128, 188, 189, 0.15);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--bg-cream);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            background: rgba(128, 188, 189, 0.15);
+            color: var(--bg-cream);
+        }
+
+        .sidebar-item.active {
+            border-left: 4px solid var(--teal-accent);
+        }
+
+        /* Main Workspace Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--dark-slate);
+        }
+
+        .top-header {
+            padding: 20px 30px;
+            background: rgba(19, 46, 53, 0.5);
+            border-bottom: 1px solid rgba(128, 188, 189, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal-accent), var(--bg-cream));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-slate);
+            font-weight: 800;
+        }
+
+        .view-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .view-body::-webkit-scrollbar { display: none; }
+
+        .screen-view {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .screen-view.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Grid Layout (Desktop & Mobile Adaptive) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+        }
+
+        /* Virtual Card */
+        .virtual-card {
+            background: linear-gradient(135deg, #1C4049 0%, #132E35 50%, #80BCBD 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .virtual-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 220px;
+            height: 220px;
+            background: rgba(249, 247, 201, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .card-chip {
+            width: 42px;
+            height: 30px;
+            background: linear-gradient(135deg, #FFE082, #FFB300);
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .card-balance-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .card-balance-amount {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--bg-cream);
+            margin: 6px 0 20px 0;
+        }
+
+        .card-footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 13px;
+            color: var(--text-light);
+            opacity: 0.9;
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-item {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(128, 188, 189, 0.15);
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-item:hover {
+            background-color: var(--teal-accent);
+            color: var(--dark-slate);
+            transform: translateY(-2px);
+        }
+
+        .action-icon { font-size: 22px; }
+        .action-label { font-size: 12px; font-weight: 700; }
+
+        /* Forms & Inputs */
+        .ui-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(128, 188, 189, 0.15);
+        }
+
+        .field-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--teal-accent);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .ui-input, .ui-select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(128, 188, 189, 0.3);
+            background-color: var(--card-surface);
+            color: var(--text-light);
+            font-size: 15px;
+            font-weight: 600;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+
+        .ui-input:focus, .ui-select:focus { border-color: var(--teal-accent); }
+
+        .cost-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .cost-row input[type="text"] { flex: 2; margin-bottom: 0; }
+        .cost-row input[type="number"] { flex: 1; margin-bottom: 0; }
+
+        .btn-delete {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--red-alert);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--bg-cream), var(--teal-accent));
+            color: var(--dark-slate);
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(128, 188, 189, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); }
+
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: var(--teal-accent);
+            border: 1px dashed var(--teal-accent);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        /* AI Chat Assistant */
+        .chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: var(--card-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(128, 188, 189, 0.2);
+            overflow: hidden;
+        }
+
+        .chat-header-bar {
+            padding: 16px 20px;
+            background: rgba(19, 46, 53, 0.9);
+            border-bottom: 1px solid rgba(128, 188, 189, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--green-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .msg-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .msg-bubble.bot {
+            background-color: var(--card-bg);
+            color: var(--bg-cream);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(128, 188, 189, 0.15);
+        }
+
+        .msg-bubble.user {
+            background: linear-gradient(135deg, var(--bg-cream), var(--teal-accent));
+            color: var(--dark-slate);
+            align-self: flex-end;
+            font-weight: 600;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-controls {
+            padding: 14px;
+            display: flex;
+            gap: 10px;
+            background: var(--dark-slate);
+            border-top: 1px solid rgba(128, 188, 189, 0.15);
+        }
+
+        .chat-controls input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid rgba(128, 188, 189, 0.3);
+            border-radius: 12px;
+            color: white;
+            padding: 12px 16px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-controls button {
+            background-color: var(--teal-accent);
+            color: var(--dark-slate);
+            border: none;
+            border-radius: 12px;
+            padding: 0 20px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .budget-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14.5px;
+        }
+
+        /* Mobile Navigation Bottom Bar */
+        .bottom-nav {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(19, 46, 53, 0.98);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(128, 188, 189, 0.15);
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mobile-nav-item.active { color: var(--bg-cream); }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .app-container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+            .sidebar { display: none; }
+            .bottom-nav { display: flex; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .view-body { padding: 20px 20px 90px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">⚡ FinStart</div>
+            <div class="sidebar-menu">
+                <div class="sidebar-item active" id="side-dash" onclick="switchNav('dash')">
+                    <span>📊</span> <span>Табло</span>
+                </div>
+                <div class="sidebar-item" id="side-chat" onclick="switchNav('chat')">
+                    <span>🤖</span> <span>AI Чат Ментор</span>
+                </div>
+                <div class="sidebar-item" id="side-config" onclick="switchNav('config')">
+                    <span>⚙️</span> <span>Настройки / Анкета</span>
+                </div>
+            </div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted);">FinStart AI Banking v2.5</div>
+    </div>
+
+    <!-- Main Content Workspace -->
+    <div class="main-content">
+        <div class="top-header">
+            <h3 style="margin:0; color: var(--bg-cream); font-size: 18px;" id="header-title">Банково Табло</h3>
+            <div class="header-user">
+                <div style="text-align: right; font-size: 13px;">
+                    <div style="font-weight: 700; color: var(--text-light);">Александър Попов</div>
+                    <div style="color: var(--teal-accent); font-size: 11px;" id="user-city-tag">София • Младежки профил</div>
+                </div>
+                <div class="user-avatar">АП</div>
+            </div>
+        </div>
+
+        <div class="view-body">
+
+            <!-- SCREEN 1: ONBOARDING SURVEY -->
+            <div id="screen-survey" class="screen-view active">
+                <div class="ui-card">
+                    <h3 style="margin-top:0; color: var(--bg-cream);">🚀 Първоначална настройка с ИИ</h3>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">
+                        Въведи основните си данни. ИИ асистентът автоматично ще зареди стандарта на живот за избрания град.
+                    </p>
+
+                    <label class="field-label">1. Избери Град (Стандарт на живот)</label>
+                    <select class="ui-select" id="cfg-city" onchange="autoFillCityData()">
+                        <option value="sofia">София (Висок стандарт)</option>
+                        <option value="plovdiv">Пловдив / Варна / Бургас</option>
+                        <option value="other">Друг областен град</option>
+                    </select>
+
+                    <label class="field-label">2. Месечна Заплата / Доход (€)</label>
+                    <input type="number" class="ui-input" id="cfg-income" value="1600">
+
+                    <label class="field-label">3. Начин на придвижване</label>
+                    <select class="ui-select" id="cfg-transport" onchange="autoFillCityData()">
+                        <option value="car">🚗 Лична кола (Гориво + поддръжка)</option>
+                        <option value="bus">🚌 Градски транспорт</option>
+                        <option value="walk">🚲 Пеша / Велосипед</option>
+                    </select>
+
+                    <label class="field-label">4. Дигитална Застраховка (Партньорски оферти)</label>
+                    <select class="ui-select" id="cfg-insurance" onchange="autoFillCityData()">
+                        <option value="tech">📱 KBC / ОББ - Защита на Смартфон & Лаптоп (~12 €)</option>
+                        <option value="travel">✈️ Allianz - Злополука & Пътуване (~8 €)</option>
+                        <option value="car_bulstrad">🚗 Bulstrad - Младежко Автокаско (~35 €)</option>
+                        <option value="none">Без застраховка (0 €)</option>
+                    </select>
+
+                    <button class="btn-primary" onclick="switchView('screen-costs')">Продължи към разходите ➡️</button>
+                </div>
+            </div>
+
+            <!-- SCREEN 2: CUSTOM COSTS -->
+            <div id="screen-costs" class="screen-view">
+                <div class="ui-card">
+                    <h3 style="margin-top:0; color: var(--bg-cream);">📌 Твоите фиксирани разходи</h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
+                        ИИ попълни средните суми за града. Можеш свободно да редактираш, триеш или добавяш нови:
+                    </p>
+
+                    <div id="costs-container">
+                        <div class="cost-row">
+                            <input type="text" value="🏠 Наем / Имот" class="ui-input cost-name">
+                            <input type="number" id="inp-rent" value="480" class="ui-input cost-val">
+                            <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                        <div class="cost-row">
+                            <input type="text" id="inp-trans-name" value="🚗 Гориво & Лична кола" class="ui-input cost-name">
+                            <input type="number" id="inp-trans-val" value="140" class="ui-input cost-val">
+                            <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                        <div class="cost-row">
+                            <input type="text" value="🛒 Храна & Супермаркет" class="ui-input cost-name">
+                            <input type="number" id="inp-food-val" value="300" class="ui-input cost-val">
+                            <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                        <div class="cost-row">
+                            <input type="text" id="inp-ins-name" value="📱 KBC Застраховка Джаджи" class="ui-input cost-name">
+                            <input type="number" id="inp-ins-val" value="12" class="ui-input cost-val">
+                            <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                    </div>
+
+                    <button class="btn-secondary" onclick="addCustomCostRow()">➕ Добави друг разход (напр. Сметки, Фитнес)</button>
+                    <button class="btn-primary" onclick="generateDashboard()">🚀 Влез в Банковото Табло</button>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: EXECUTIVE DASHBOARD -->
+            <div id="screen-dashboard" class="screen-view">
+                <div class="dashboard-grid">
+                    <div>
+                        <!-- Virtual Card -->
+                        <div class="virtual-card">
+                            <div class="card-chip"></div>
+                            <div class="card-balance-title">Наличен свободен ресурс</div>
+                            <div class="card-balance-amount" id="dash-free-balance">0 €</div>
+                            <div class="card-footer-info">
+                                <span id="dash-card-tag">FinStart Virtual Card</span>
+                                <span style="font-weight: 800; font-size: 16px;">VISA</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick Action Buttons -->
+                        <div class="quick-actions-grid">
+                            <div class="action-item" onclick="alert('⚡ Симулиран бърз превод по IBAN!')">
+                                <span class="action-icon">💸</span>
+                                <span class="action-label">Превод</span>
+                            </div>
+                            <div class="action-item" onclick="alert('🔒 Картата е успешно заключена/отключена!')">
+                                <span class="action-icon">🔒</span>
+                                <span class="action-label">Карта</span>
+                            </div>
+                            <div class="action-item" onclick="alert('💰 Средствата са прехвърлени в спестовната касичка!')">
+                                <span class="action-icon">💰</span>
+                                <span class="action-label">Касичка</span>
+                            </div>
+                            <div class="action-item" onclick="switchNav('chat')">
+                                <span class="action-icon">🤖</span>
+                                <span class="action-label">AI Чат</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Breakdown -->
+                    <div>
+                        <div class="ui-card">
+                            <h4 style="margin-top:0; color: var(--bg-cream); margin-bottom: 16px; font-size: 16px;">📊 Месечен анализ на бюджета</h4>
+                            <div id="dash-budget-breakdown"></div>
+                            
+                            <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <div class="budget-list-item">
+                                    <span>Фиксирани задължителни разходи:</span>
+                                    <span id="dash-total-fixed" style="color: var(--red-alert); font-weight: 700;">0 €</span>
+                                </div>
+                                <div class="budget-list-item">
+                                    <span>🛡️ ИИ Спестовен фонд (35% от остатъка):</span>
+                                    <span id="dash-total-savings" style="color: var(--green-glow); font-weight: 700;">0 €</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: AI CHAT ASSISTANT -->
+            <div id="screen-chat" class="screen-view">
+                <div class="chat-wrapper">
+                    <div class="chat-header-bar">
+                        <div class="chat-status-dot"></div>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--bg-cream);">FinStart AI Financial Advisor</span>
+                    </div>
+                    <div class="chat-body" id="chat-box">
+                        <div class="msg-bubble bot">
+                            Здравей! Аз съм твоят ИИ финансов ментор. Имаш ли колебания относно бюджет, неочаквани разходи или покупка?
+                        </div>
+                    </div>
+                    <div class="chat-controls">
+                        <input type="text" id="chat-input-text" placeholder="Задай въпрос напр. 'Мога ли да си купя нов лаптоп?'..." onkeypress="onChatKey(event)">
+                        <button onclick="handleUserMessage()">Изпрати</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="mobile-nav-item active" id="mob-dash" onclick="switchNav('dash')">
+            <span style="font-size: 20px;">📊</span>
+            <span>Табло</span>
+        </div>
+        <div class="mobile-nav-item" id="mob-chat" onclick="switchNav('chat')">
+            <span style="font-size: 20px;">🤖</span>
+            <span>AI Чат</span>
+        </div>
+        <div class="mobile-nav-item" id="mob-config" onclick="switchNav('config')">
+            <span style="font-size: 20px;">⚙️</span>
+            <span>Настройки</span>
+        </div>
+    </div>
+</div>
+
+<script>
+let appState = {
+    income: 1600,
+    totalFixed: 0,
+    savings: 0,
+    freeBalance: 0,
+    cityName: 'София'
+};
+
+function autoFillCityData() {
+    let city = document.getElementById('cfg-city').value;
+    let transport = document.getElementById('cfg-transport').value;
+    let insurance = document.getElementById('cfg-insurance').value;
+
+    let rentInput = document.getElementById('inp-rent');
+    let foodInput = document.getElementById('inp-food-val');
+    let transVal = document.getElementById('inp-trans-val');
+    let transName = document.getElementById('inp-trans-name');
+    let insVal = document.getElementById('inp-ins-val');
+    let insName = document.getElementById('inp-ins-name');
+
+    if (city === 'sofia') {
+        rentInput.value = 480;
+        foodInput.value = 300;
+        appState.cityName = 'София';
+    } else if (city === 'plovdiv') {
+        rentInput.value = 350;
+        foodInput.value = 240;
+        appState.cityName = 'Пловдив/Варна';
+    } else {
+        rentInput.value = 260;
+        foodInput.value = 200;
+        appState.cityName = 'Областен град';
+    }
+
+    if (transport === 'car') {
+        transName.value = "🚗 Гориво & Лична кола";
+        transVal.value = (city === 'sofia') ? 140 : 100;
+    } else if (transport === 'bus') {
+        transName.value = "🚌 Градски транспорт";
+        transVal.value = 25;
+    } else {
+        transName.value = "🚲 Велосипед / Пеша";
+        transVal.value = 0;
+    }
+
+    if (insurance === 'tech') {
+        insName.value = "📱 KBC Застраховка Джаджи";
+        insVal.value = 12;
+    } else if (insurance === 'travel') {
+        insName.value = "✈️ Allianz Пътуване";
+        insVal.value = 8;
+    } else if (insurance === 'car_bulstrad') {
+        insName.value = "🚗 Bulstrad Автокаско";
+        insVal.value = 35;
+    } else {
+        insName.value = "🛡️ Без застраховка";
+        insVal.value = 0;
+    }
+}
+
+function addCustomCostRow() {
+    let container = document.getElementById('costs-container');
+    let div = document.createElement('div');
+    div.className = 'cost-row';
+    div.innerHTML = `
+        <input type="text" placeholder="Име на разход" class="ui-input cost-name">
+        <input type="number" placeholder="€" class="ui-input cost-val">
+        <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+function generateDashboard() {
+    let income = parseFloat(document.getElementById('cfg-income').value);
+    let names = document.querySelectorAll('.cost-name');
+    let vals = document.querySelectorAll('.cost-val');
+
+    if (isNaN(income) || income <= 0) {
+        alert("Моля въведете валиден доход!");
+        return;
+    }
+
+    let totalFixed = 0;
+    let breakdownHTML = '';
+
+    for (let i = 0; i < names.length; i++) {
+        let n = names[i].value || 'Разход';
+        let v = parseFloat(vals[i].value) || 0;
+        totalFixed += v;
+        breakdownHTML += `
+            <div class="budget-list-item">
+                <span style="color: var(--text-muted);">${n}</span>
+                <span style="font-weight:600;">${v} €</span>
+            </div>
+        `;
+    }
+
+    if (totalFixed >= income) {
+        alert("Разходите надвишават доходите ви!");
+        return;
+    }
+
+    let leftover = income - totalFixed;
+    let savings = Math.round(leftover * 0.35);
+    let freeBalance = leftover - savings;
+
+    appState.income = income;
+    appState.totalFixed = totalFixed;
+    appState.savings = savings;
+    appState.freeBalance = freeBalance;
+
+    document.getElementById('dash-free-balance').innerText = freeBalance + ' €';
+    document.getElementById('dash-budget-breakdown').innerHTML = breakdownHTML;
+    document.getElementById('dash-total-fixed').innerText = totalFixed + ' €';
+    document.getElementById('dash-total-savings').innerText = savings + ' €';
+    document.getElementById('user-city-tag').innerText = `${appState.cityName} • Доход: ${income} €`;
+
+    switchView('screen-dashboard');
+    updateActiveNavVisuals('dash');
+}
+
+function switchView(id) {
+    document.querySelectorAll('.screen-view').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    let titleMap = {
+        'screen-survey': 'Настройка на профила',
+        'screen-costs': 'Персонализирани разходи',
+        'screen-dashboard': 'Банково Табло',
+        'screen-chat': 'AI Финансов Ментор'
+    };
+    document.getElementById('header-title').innerText = titleMap[id] || 'FinStart Bank';
+}
+
+function switchNav(type) {
+    updateActiveNavVisuals(type);
+    if (type === 'dash') {
+        switchView('screen-dashboard');
+    } else if (type === 'chat') {
+        switchView('screen-chat');
+    } else if (type === 'config') {
+        switchView('screen-survey');
+    }
+}
+
+function updateActiveNavVisuals(type) {
+    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active'));
+
+    if (type === 'dash') {
+        document.getElementById('side-dash')?.classList.add('active');
+        document.getElementById('mob-dash')?.classList.add('active');
+    } else if (type === 'chat') {
+        document.getElementById('side-chat')?.classList.add('active');
+        document.getElementById('mob-chat')?.classList.add('active');
+    } else if (type === 'config') {
+        document.getElementById('side-config')?.classList.add('active');
+        document.getElementById('mob-config')?.classList.add('active');
+    }
+}
+
+function handleUserMessage() {
+    let inp = document.getElementById('chat-input-text');
+    let text = inp.value.trim();
+    if (!text) return;
+
+    appendMsg(text, 'user');
+    inp.value = '';
+
+    setTimeout(() => {
+        let reply = getSmartReply(text);
+        appendMsg(reply, 'bot');
+    }, 500);
+}
+
+function onChatKey(e) {
+    if (e.key === 'Enter') handleUserMessage();
+}
+
+function appendMsg(text, sender) {
+    let box = document.getElementById('chat-box');
+    let div = document.createElement('div');
+    div.className = `msg-bubble ${sender}`;
+    div.innerText = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
+function getSmartReply(q) {
+    let text = q.toLowerCase();
+    if (text.includes('телефон') || text.includes('купувам') || text.includes('лаптоп') || text.includes('пари')) {
+        return `В момента разполагаш с ${appState.freeBalance} € свободен финансов ресурс. Покупката е възможна, но съветвам да запазиш поне 30% буфер за непредвидени ситуации.`;
+    } else if (text.includes('спестявания') || text.includes('фонд') || text.includes('касичка')) {
+        return `В момента ИИ заделя по ${appState.savings} € месечно. За 1 година това ще изгради финансов буфер от над ${appState.savings * 12} €!`;
+    } else if (text.includes('наем') || text.includes('град') || text.includes('софия')) {
+        return `Бюджетът ти е съобразен със стандарта на живот в ${appState.cityName}. Фиксираните ти разходи са ${appState.totalFixed} € месечно.`;
+    } else {
+        return `Анализирах профила ти: Всички сметки и застраховки са покрити. Оставям ти ${appState.freeBalance} € чисто за лични удоволствия. С какво друго мога да помогна?`;
+    }
+}
+</script>
+
+</body>
+</html>
