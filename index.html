@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FinStart - AI Mobile & Desktop Banking</title>
+    <title>FinStart - AI Eco Banking & Low Balance Alert</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,6 +16,7 @@
             --text-muted: #94A3B8;
             --green-glow: #34D399;
             --red-alert: #F87171;
+            --gold-accent: #FBBF24;
             --radius-lg: 24px;
             --radius-md: 16px;
             --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.4);
@@ -38,7 +39,6 @@
             min-height: 100vh;
         }
 
-        /* Responsive Wrapper */
         .app-container {
             width: 100%;
             max-width: 1200px;
@@ -53,7 +53,7 @@
             position: relative;
         }
 
-        /* Desktop Sidebar Navigation */
+        /* Sidebar Navigation */
         .sidebar {
             width: 260px;
             background: rgba(19, 46, 53, 0.95);
@@ -71,24 +71,24 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .sidebar-item {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: var(--radius-md);
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14.5px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -102,7 +102,7 @@
             border-left: 4px solid var(--teal-accent);
         }
 
-        /* Main Workspace Area */
+        /* Main Workspace */
         .main-content {
             flex: 1;
             display: flex;
@@ -112,7 +112,7 @@
         }
 
         .top-header {
-            padding: 20px 30px;
+            padding: 18px 30px;
             background: rgba(19, 46, 53, 0.5);
             border-bottom: 1px solid rgba(128, 188, 189, 0.15);
             display: flex;
@@ -140,7 +140,7 @@
 
         .view-body {
             flex: 1;
-            padding: 30px;
+            padding: 24px 30px;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
@@ -159,7 +159,33 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Dashboard Grid Layout (Desktop & Mobile Adaptive) */
+        /* Еко Лампичка */
+        .ai-tip-card {
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(128, 188, 189, 0.15));
+            border: 1px solid var(--green-glow);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .ai-tip-card:hover { transform: translateY(-2px); }
+
+        .tip-bulb-icon {
+            font-size: 28px;
+            animation: pulseBulb 2s infinite alternate;
+        }
+
+        @keyframes pulseBulb {
+            from { transform: scale(1); filter: drop-shadow(0 0 2px var(--green-glow)); }
+            to { transform: scale(1.15); filter: drop-shadow(0 0 10px var(--green-glow)); }
+        }
+
+        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 360px 1fr;
@@ -170,36 +196,24 @@
         .virtual-card {
             background: linear-gradient(135deg, #1C4049 0%, #132E35 50%, #80BCBD 100%);
             border-radius: var(--radius-lg);
-            padding: 24px;
+            padding: 22px;
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-        }
-
-        .virtual-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 220px;
-            height: 220px;
-            background: rgba(249, 247, 201, 0.08);
-            border-radius: 50%;
-            pointer-events: none;
+            margin-bottom: 16px;
         }
 
         .card-chip {
-            width: 42px;
-            height: 30px;
+            width: 40px;
+            height: 28px;
             background: linear-gradient(135deg, #FFE082, #FFB300);
             border-radius: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .card-balance-title {
-            font-size: 13px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
@@ -207,17 +221,28 @@
         }
 
         .card-balance-amount {
-            font-size: 38px;
+            font-size: 36px;
             font-weight: 800;
             color: var(--bg-cream);
-            margin: 6px 0 20px 0;
+            margin: 4px 0 16px 0;
+            transition: color 0.3s ease;
+        }
+
+        .card-balance-amount.low-warning {
+            color: var(--red-alert) !important;
+            animation: pulseRed 1s infinite alternate;
+        }
+
+        @keyframes pulseRed {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
         }
 
         .card-footer-info {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-light);
             opacity: 0.9;
         }
@@ -225,21 +250,21 @@
         /* Quick Actions Grid */
         .quick-actions-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .action-item {
             background-color: var(--card-bg);
             border: 1px solid rgba(128, 188, 189, 0.15);
             border-radius: var(--radius-md);
-            padding: 16px 10px;
+            padding: 14px 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -250,14 +275,23 @@
             transform: translateY(-2px);
         }
 
-        .action-icon { font-size: 22px; }
-        .action-label { font-size: 12px; font-weight: 700; }
+        .action-item.unexpected {
+            border-color: rgba(248, 113, 113, 0.4);
+            background: rgba(248, 113, 113, 0.1);
+        }
+        .action-item.unexpected:hover {
+            background: var(--red-alert);
+            color: white;
+        }
 
-        /* Forms & Inputs */
+        .action-icon { font-size: 20px; }
+        .action-label { font-size: 11px; font-weight: 700; }
+
+        /* UI Cards & Inputs */
         .ui-card {
             background-color: var(--card-bg);
             border-radius: var(--radius-lg);
-            padding: 24px;
+            padding: 22px;
             margin-bottom: 20px;
             border: 1px solid rgba(128, 188, 189, 0.15);
         }
@@ -281,16 +315,13 @@
             font-weight: 600;
             outline: none;
             margin-bottom: 16px;
-            transition: border-color 0.2s ease;
         }
-
-        .ui-input:focus, .ui-select:focus { border-color: var(--teal-accent); }
 
         .cost-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .cost-row input[type="text"] { flex: 2; margin-bottom: 0; }
@@ -301,7 +332,7 @@
             color: var(--red-alert);
             border: none;
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 14px;
             cursor: pointer;
             font-weight: 700;
         }
@@ -327,7 +358,7 @@
             background: transparent;
             color: var(--teal-accent);
             border: 1px dashed var(--teal-accent);
-            padding: 14px;
+            padding: 12px;
             border-radius: var(--radius-md);
             font-size: 14px;
             font-weight: 700;
@@ -335,11 +366,79 @@
             margin-bottom: 16px;
         }
 
+        /* Gamification */
+        .mission-item {
+            background: var(--card-surface);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(128, 188, 189, 0.15);
+        }
+
+        .mission-info h5 { margin: 0 0 4px 0; font-size: 14px; color: var(--bg-cream); }
+        .mission-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+        .btn-claim {
+            background: var(--gold-accent);
+            color: var(--dark-slate);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-claim.completed {
+            background: rgba(52, 211, 153, 0.2);
+            color: var(--green-glow);
+            cursor: default;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .badge-card {
+            background: var(--card-surface);
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            text-align: center;
+            border: 1px solid rgba(128, 188, 189, 0.15);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .badge-card.unlocked {
+            opacity: 1;
+            border-color: var(--gold-accent);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+
+        .badge-icon { font-size: 32px; margin-bottom: 8px; }
+        .badge-title { font-size: 12px; font-weight: 700; color: var(--bg-cream); }
+
+        .certificate-box {
+            background: linear-gradient(135deg, #132E35, #1E3E45);
+            border: 3px double var(--gold-accent);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
         /* AI Chat Assistant */
         .chat-wrapper {
             display: flex;
             flex-direction: column;
-            height: 600px;
+            height: 560px;
             background: var(--card-surface);
             border-radius: var(--radius-lg);
             border: 1px solid rgba(128, 188, 189, 0.2);
@@ -378,6 +477,7 @@
             border-radius: 18px;
             font-size: 14px;
             line-height: 1.5;
+            white-space: pre-wrap;
         }
 
         .msg-bubble.bot {
@@ -428,12 +528,70 @@
         .budget-list-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 14.5px;
+            font-size: 14px;
         }
 
-        /* Mobile Navigation Bottom Bar */
+        /* History */
+        .history-list {
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(128, 188, 189, 0.3); border-radius: 2px; }
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+        .history-icon { font-size: 18px; }
+        .history-main { flex: 1; min-width: 0; }
+        .history-text { color: var(--text-light); font-weight: 600; word-break: break-word; }
+        .history-time { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+        .history-amt { font-weight: 800; white-space: nowrap; }
+        .history-amt.out { color: var(--red-alert); }
+        .history-amt.in { color: var(--green-glow); }
+        .history-amt.transfer { color: var(--teal-accent); }
+        .history-amt.xp { color: var(--gold-accent); }
+        .history-amt.info { color: var(--text-muted); }
+        .history-empty { color: var(--text-muted); font-size: 13px; padding: 10px 0; }
+
+        /* Accounts */
+        .account-item {
+            background: var(--card-surface);
+            border: 1px solid rgba(128, 188, 189, 0.15);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .account-left { display: flex; align-items: center; gap: 12px; }
+        .account-icon { font-size: 26px; }
+        .account-name { font-size: 14px; font-weight: 700; color: var(--bg-cream); }
+        .account-sub { font-size: 11px; color: var(--text-muted); }
+        .account-right { display: flex; align-items: center; gap: 10px; }
+        .account-balance { font-size: 18px; font-weight: 800; color: var(--green-glow); }
+        .account-notice {
+            display: none;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Mobile Bottom Nav */
         .bottom-nav {
             display: none;
             position: absolute;
@@ -462,31 +620,33 @@
 
         .mobile-nav-item.active { color: var(--bg-cream); }
 
-        /* Responsive Breakpoints */
         @media (max-width: 900px) {
-            .app-container {
-                height: 100vh;
-                max-height: 100vh;
-                border-radius: 0;
-                border: none;
-            }
+            .app-container { height: 100vh; max-height: 100vh; border-radius: 0; border: none; }
             .sidebar { display: none; }
             .bottom-nav { display: flex; }
             .dashboard-grid { grid-template-columns: 1fr; }
-            .view-body { padding: 20px 20px 90px 20px; }
+            .view-body { padding: 16px 16px 85px 16px; }
+            .badges-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-actions-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Desktop Sidebar -->
+    <!-- Sidebar -->
     <div class="sidebar">
         <div>
             <div class="sidebar-brand">⚡ FinStart</div>
             <div class="sidebar-menu">
                 <div class="sidebar-item active" id="side-dash" onclick="switchNav('dash')">
                     <span>📊</span> <span>Табло</span>
+                </div>
+                <div class="sidebar-item" id="side-accounts" onclick="switchNav('accounts')">
+                    <span>💳</span> <span>Сметки</span>
+                </div>
+                <div class="sidebar-item" id="side-missions" onclick="switchNav('missions')">
+                    <span>🎯</span> <span>Мисии & Награди</span>
                 </div>
                 <div class="sidebar-item" id="side-chat" onclick="switchNav('chat')">
                     <span>🤖</span> <span>AI Чат Ментор</span>
@@ -496,23 +656,43 @@
                 </div>
             </div>
         </div>
-        <div style="font-size: 12px; color: var(--text-muted);">FinStart AI Banking v2.5</div>
+
+        <div style="background: var(--card-surface); padding: 14px; border-radius: var(--radius-md); border: 1px solid rgba(128,188,189,0.2);">
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--gold-accent); margin-bottom:6px;">
+                <span>Ниво <span id="user-level">1</span></span>
+                <span><span id="user-xp">0</span> XP</span>
+            </div>
+            <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                <div id="xp-progress-bar" style="width: 0%; height:100%; background: var(--gold-accent); transition: width 0.3s;"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Content Workspace -->
+    <!-- Main Workspace -->
     <div class="main-content">
         <div class="top-header">
-            <h3 style="margin:0; color: var(--bg-cream); font-size: 18px;" id="header-title">Банково Табло</h3>
+            <h3 style="margin:0; color: var(--bg-cream); font-size: 18px;" id="header-title">Настройка на профила</h3>
             <div class="header-user">
                 <div style="text-align: right; font-size: 13px;">
-                    <div style="font-weight: 700; color: var(--text-light);">Александър Попов</div>
+                    <div style="font-weight: 700; color: var(--text-light);">FinStart dev acc</div>
                     <div style="color: var(--teal-accent); font-size: 11px;" id="user-city-tag">София • Младежки профил</div>
                 </div>
-                <div class="user-avatar">АП</div>
+                <div class="user-avatar">FS</div>
             </div>
         </div>
 
         <div class="view-body">
+
+            <!-- Еко Лампичка -->
+            <div class="ai-tip-card" onclick="nextAITip()">
+                <div class="tip-bulb-icon">🌱</div>
+                <div style="flex:1;">
+                    <div style="font-size:11px; font-weight:800; color:var(--green-glow); text-transform:uppercase; letter-spacing:0.5px;">Зелен ИИ Съвет (Кликни за нов):</div>
+                    <div style="font-size:13px; color:var(--text-light); font-weight:600; margin-top:2px;" id="ai-tip-text">
+                        "Използването на градски транспорт спестява до 120€ на месец от гориво и намалява CO2 отпечатъка ти!"
+                    </div>
+                </div>
+            </div>
 
             <!-- SCREEN 1: ONBOARDING SURVEY -->
             <div id="screen-survey" class="screen-view active">
@@ -529,17 +709,20 @@
                         <option value="other">Друг областен град</option>
                     </select>
 
-                    <label class="field-label">2. Месечна Заплата / Доход (€)</label>
+                    <label class="field-label">2. Възраст (години)</label>
+                    <input type="number" class="ui-input" id="cfg-age" value="22" min="14" max="100">
+
+                    <label class="field-label">3. Месечна Заплата / Доход (€)</label>
                     <input type="number" class="ui-input" id="cfg-income" value="1600">
 
-                    <label class="field-label">3. Начин на придвижване</label>
+                    <label class="field-label">4. Начин на придвижване (Еко Анализ)</label>
                     <select class="ui-select" id="cfg-transport" onchange="autoFillCityData()">
+                        <option value="bus">🚌 Градски транспорт (Еко избор)</option>
+                        <option value="walk">🚲 Пеша / Велосипед (0% Емисии)</option>
                         <option value="car">🚗 Лична кола (Гориво + поддръжка)</option>
-                        <option value="bus">🚌 Градски транспорт</option>
-                        <option value="walk">🚲 Пеша / Велосипед</option>
                     </select>
 
-                    <label class="field-label">4. Дигитална Застраховка (Партньорски оферти)</label>
+                    <label class="field-label">5. Дигитална Застраховка (Партньори)</label>
                     <select class="ui-select" id="cfg-insurance" onchange="autoFillCityData()">
                         <option value="tech">📱 KBC / ОББ - Защита на Смартфон & Лаптоп (~12 €)</option>
                         <option value="travel">✈️ Allianz - Злополука & Пътуване (~8 €)</option>
@@ -566,8 +749,8 @@
                             <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
                         </div>
                         <div class="cost-row">
-                            <input type="text" id="inp-trans-name" value="🚗 Гориво & Лична кола" class="ui-input cost-name">
-                            <input type="number" id="inp-trans-val" value="140" class="ui-input cost-val">
+                            <input type="text" id="inp-trans-name" value="🚌 Градски транспорт" class="ui-input cost-name">
+                            <input type="number" id="inp-trans-val" value="25" class="ui-input cost-val">
                             <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
                         </div>
                         <div class="cost-row">
@@ -582,7 +765,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-secondary" onclick="addCustomCostRow()">➕ Добави друг разход (напр. Сметки, Фитнес)</button>
+                    <button class="btn-secondary" onclick="addCustomCostRow()">➕ Добави друг разход</button>
                     <button class="btn-primary" onclick="generateDashboard()">🚀 Влез в Банковото Табло</button>
                 </div>
             </div>
@@ -597,10 +780,12 @@
                             <div class="card-balance-title">Наличен свободен ресурс</div>
                             <div class="card-balance-amount" id="dash-free-balance">0 €</div>
                             <div class="card-footer-info">
-                                <span id="dash-card-tag">FinStart Virtual Card</span>
+                                <span id="dash-card-tag">FinStart Green Visa</span>
                                 <span style="font-weight: 800; font-size: 16px;">VISA</span>
                             </div>
                         </div>
+
+                        <button class="btn-primary" style="margin-bottom: 16px;" onclick="switchNav('accounts')">💳 Моите сметки и подсметки ➡️</button>
 
                         <!-- Quick Action Buttons -->
                         <div class="quick-actions-grid">
@@ -612,9 +797,13 @@
                                 <span class="action-icon">🔒</span>
                                 <span class="action-label">Карта</span>
                             </div>
-                            <div class="action-item" onclick="alert('💰 Средствата са прехвърлени в спестовната касичка!')">
+                            <div class="action-item" onclick="triggerPiggyBank()">
                                 <span class="action-icon">💰</span>
                                 <span class="action-label">Касичка</span>
+                            </div>
+                            <div class="action-item unexpected" onclick="addUnexpectedCost()">
+                                <span class="action-icon">🚨</span>
+                                <span class="action-label">Непредвиден</span>
                             </div>
                             <div class="action-item" onclick="switchNav('chat')">
                                 <span class="action-icon">🤖</span>
@@ -628,15 +817,25 @@
                         <div class="ui-card">
                             <h4 style="margin-top:0; color: var(--bg-cream); margin-bottom: 16px; font-size: 16px;">📊 Месечен анализ на бюджета</h4>
                             <div id="dash-budget-breakdown"></div>
-                            
+
                             <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);">
                                 <div class="budget-list-item">
                                     <span>Фиксирани задължителни разходи:</span>
                                     <span id="dash-total-fixed" style="color: var(--red-alert); font-weight: 700;">0 €</span>
                                 </div>
                                 <div class="budget-list-item">
-                                    <span>🛡️ ИИ Спестовен фонд (35% от остатъка):</span>
+                                    <span>🛡️ Спестовен фонд (35% от остатъка в началото):</span>
                                     <span id="dash-total-savings" style="color: var(--green-glow); font-weight: 700;">0 €</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                    <span style="font-size: 14px; font-weight: 800; color: var(--bg-cream);">🕘 История на движенията</span>
+                                    <span style="font-size: 11px; color: var(--text-muted);"><span id="dash-history-count">0</span> записа</span>
+                                </div>
+                                <div id="dash-history" class="history-list">
+                                    <div class="history-empty">Все още няма движения.</div>
                                 </div>
                             </div>
                         </div>
@@ -644,20 +843,129 @@
                 </div>
             </div>
 
-            <!-- SCREEN 4: AI CHAT ASSISTANT -->
+            <!-- SCREEN: ACCOUNTS -->
+            <div id="screen-accounts" class="screen-view">
+                <div class="account-notice" id="acc-notice">
+                    ⚠️ Първо попълни профила и влез в Банковото табло, за да се заредят средствата ти.
+                </div>
+
+                <div class="ui-card">
+                    <h3 style="margin-top:0; color: var(--bg-cream);">💳 Моите сметки</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                        Общо средства: <b id="acc-total" style="color: var(--green-glow);">0 €</b>
+                    </p>
+                    <div id="accounts-list"></div>
+                </div>
+
+                <div class="ui-card">
+                    <h4 style="margin-top:0; color: var(--bg-cream); margin-bottom: 16px;">🔄 Прехвърли между сметки</h4>
+
+                    <label class="field-label">От сметка</label>
+                    <select class="ui-select" id="tr-from"></select>
+
+                    <label class="field-label">Към сметка</label>
+                    <select class="ui-select" id="tr-to"></select>
+
+                    <label class="field-label">Сума (€)</label>
+                    <input type="number" class="ui-input" id="tr-amount" placeholder="напр. 50" min="0" step="0.01">
+
+                    <button class="btn-primary" onclick="transferFunds()">Прехвърли ➡️</button>
+                </div>
+
+                <div class="ui-card">
+                    <h4 style="margin-top:0; color: var(--bg-cream); margin-bottom: 16px;">➕ Нова подсметка</h4>
+
+                    <label class="field-label">Име (напр. Почивка, Лаптоп)</label>
+                    <input type="text" class="ui-input" id="new-acc-name" placeholder="Име на подсметката" maxlength="30">
+
+                    <label class="field-label">Икона</label>
+                    <select class="ui-select" id="new-acc-icon">
+                        <option value="🎯">🎯 Цел</option>
+                        <option value="✈️">✈️ Почивка</option>
+                        <option value="💻">💻 Техника</option>
+                        <option value="🎓">🎓 Обучение</option>
+                        <option value="🚨">🚨 Авариен фонд</option>
+                        <option value="🎁">🎁 Подаръци</option>
+                    </select>
+
+                    <label class="field-label">Начална сума от основната сметка (€, по желание)</label>
+                    <input type="number" class="ui-input" id="new-acc-amount" placeholder="0" min="0" step="0.01">
+
+                    <button class="btn-primary" onclick="createSubAccount()">Създай подсметка</button>
+                </div>
+            </div>
+
+            <!-- SCREEN 4: GAMIFICATION -->
+            <div id="screen-missions" class="screen-view">
+                <div class="ui-card">
+                    <h3 style="margin-top:0; color: var(--bg-cream);">🎯 Активни Мисии & Предизвикателства</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Завършвай мисии за XP точки!</p>
+
+                    <div class="mission-item">
+                        <div class="mission-info">
+                            <h5>🌱 Зелен Трафик (Еко Мисия)</h5>
+                            <p>Избери градски транспорт или велосипед (+60 XP)</p>
+                        </div>
+                        <button class="btn-claim" id="m-btn-eco" onclick="completeMission('eco', 60)">Изпълни</button>
+                    </div>
+
+                    <div class="mission-item">
+                        <div class="mission-info">
+                            <h5>💰 Първи стъпки в спестяването</h5>
+                            <p>Задели средства в спестовната касичка (+50 XP)</p>
+                        </div>
+                        <button class="btn-claim" id="m-btn-1" onclick="completeMission(1, 50)">Изпълни</button>
+                    </div>
+
+                    <div class="mission-item">
+                        <div class="mission-info">
+                            <h5>🤖 Консултация с ИИ Ментор</h5>
+                            <p>Задай въпрос на ИИ Чат бота за бюджета ти (+40 XP)</p>
+                        </div>
+                        <button class="btn-claim" id="m-btn-3" onclick="completeMission(3, 40)">Изпълни</button>
+                    </div>
+
+                    <h4 style="color: var(--bg-cream); margin-top: 24px; margin-bottom: 8px;">🏆 Твоите Баджове</h4>
+                    <div class="badges-grid">
+                        <div class="badge-card" id="badge-1">
+                            <div class="badge-icon">🌱</div>
+                            <div class="badge-title">Еко Спестител</div>
+                        </div>
+                        <div class="badge-card" id="badge-2">
+                            <div class="badge-icon">🛡️</div>
+                            <div class="badge-title">Застрахован Магистър</div>
+                        </div>
+                        <div class="badge-card" id="badge-3">
+                            <div class="badge-icon">🎓</div>
+                            <div class="badge-title">Финансов Гуру</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="certificate-box">
+                    <div style="font-size:12px; font-weight:800; color:var(--gold-accent); text-transform:uppercase; letter-spacing:2px;">Официален Сертификат</div>
+                    <h3 style="color:var(--bg-cream); margin: 10px 0 6px 0;">Зелен & Грамотен Младеж</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Издаден от FinStart AI Banking.</p>
+                    <div style="display:inline-block; padding: 6px 16px; background:rgba(251,191,36,0.2); border-radius:20px; color:var(--gold-accent); font-weight:800; font-size:12px;" id="cert-status">
+                        🔒 Заключен (Необходимо е Ниво 2)
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCREEN 5: AI CHAT ASSISTANT -->
             <div id="screen-chat" class="screen-view">
                 <div class="chat-wrapper">
                     <div class="chat-header-bar">
                         <div class="chat-status-dot"></div>
-                        <span style="font-size: 14px; font-weight: 700; color: var(--bg-cream);">FinStart AI Financial Advisor</span>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--bg-cream);">FinStart AI Green Advisor</span>
                     </div>
                     <div class="chat-body" id="chat-box">
                         <div class="msg-bubble bot">
-                            Здравей! Аз съм твоят ИИ финансов ментор. Имаш ли колебания относно бюджет, неочаквани разходи или покупка?
+                            Здравей! Аз съм твоят ИИ финансов и екологичен ментор. Имаш ли колебания за разходите или искаш зелен съвет?
                         </div>
                     </div>
                     <div class="chat-controls">
-                        <input type="text" id="chat-input-text" placeholder="Задай въпрос напр. 'Мога ли да си купя нов лаптоп?'..." onkeypress="onChatKey(event)">
+                        <input type="text" id="chat-input-text" placeholder="Задай въпрос напр. 'Как да спестя за 3D скенер за 5 месеца?'..." onkeypress="onChatKey(event)">
                         <button onclick="handleUserMessage()">Изпрати</button>
                     </div>
                 </div>
@@ -671,6 +979,14 @@
         <div class="mobile-nav-item active" id="mob-dash" onclick="switchNav('dash')">
             <span style="font-size: 20px;">📊</span>
             <span>Табло</span>
+        </div>
+        <div class="mobile-nav-item" id="mob-accounts" onclick="switchNav('accounts')">
+            <span style="font-size: 20px;">💳</span>
+            <span>Сметки</span>
+        </div>
+        <div class="mobile-nav-item" id="mob-missions" onclick="switchNav('missions')">
+            <span style="font-size: 20px;">🎯</span>
+            <span>Мисии</span>
         </div>
         <div class="mobile-nav-item" id="mob-chat" onclick="switchNav('chat')">
             <span style="font-size: 20px;">🤖</span>
@@ -689,8 +1005,396 @@ let appState = {
     totalFixed: 0,
     savings: 0,
     freeBalance: 0,
-    cityName: 'София'
+    cityName: 'София',
+    age: 22,
+    subAccounts: [],
+    history: [],
+    ready: false,
+    xp: 0,
+    level: 1
 };
+
+
+    const systemContext = `Ти си FinStart AI Green Advisor - финансов и екологичен ментор за младежи (18-25г.).
+Данни за бюджета на потребителя:
+- Възраст: ${appState.age} години
+- Град: ${appState.cityName}
+- Месечен доход: ${appState.income} €
+- Фиксирани разходи: ${appState.totalFixed} €
+- Спестовен фонд: ${appState.savings} €
+- Свободен баланс: ${appState.freeBalance} €${subAccountsSummary()}
+
+ПРАВИЛА:
+1. Ако пита за спестяване на сума за Х месеца, изчисли точно месечната вноска (Сума / Месеци).
+2. Сравни вноската със свободния баланс и кажи дали е възможно без риск.
+3. Отговаряй на български, кратко (2-3 изречения), дружелюбно, с емоджита.`;
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`,
+            "X-Title": "FinStart"
+        },
+        body: JSON.stringify({
+            model: MODEL,
+            messages: [
+                { role: "system", content: systemContext },
+                { role: "user", content: userQuery }
+            ],
+            temperature: 0.7
+        })
+    });
+
+    if (!response.ok) {
+        let msg = `HTTP грешка ${response.status}`;
+        try {
+            const err = await response.json();
+            msg = err.error?.message || msg;
+        } catch (e) {}
+        throw new Error(msg);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content;
+    if (!text) throw new Error("Няма върнат отговор от модела.");
+    return text;
+
+// ===== Зелени съвети =====
+const aiTips = [
+    "Използването на градски транспорт спестява до 120€ на месец от гориво и намалява CO2 отпечатъка ти!",
+    "Готвенето вкъщи 4 пъти седмично може да спести над 80€ месечно и намалява хранителните отпадъци. 🥗",
+    "Изключвай уредите от контакта: режимът на готовност може да вземе до 10% от сметката за ток. 🔌",
+    "Правило 50/30/20: 50% нужди, 30% желания, 20% спестявания. 💡",
+    "Продуктите втора употреба спестяват пари и намаляват отпадъците. ♻️"
+];
+let tipIndex = 0;
+
+function nextAITip() {
+    tipIndex = (tipIndex + 1) % aiTips.length;
+    document.getElementById('ai-tip-text').innerText = `"${aiTips[tipIndex]}"`;
+}
+
+// ===== Аларма за ниска наличност =====
+let lowBalanceWarned = false;
+
+function checkLowBalanceAlert() {
+    const el = document.getElementById('dash-free-balance');
+    const threshold = Math.max(50, appState.income * 0.05); // под 5% от дохода (мин. 50 €)
+
+    if (appState.freeBalance < threshold) {
+        el.classList.add('low-warning');
+        if (!lowBalanceWarned) {
+            lowBalanceWarned = true;
+            alert(`⚠️ Ниска наличност! Свободният ти ресурс е само ${appState.freeBalance} €.`);
+        }
+    } else {
+        el.classList.remove('low-warning');
+        lowBalanceWarned = false;
+    }
+}
+
+// ===== История на движенията =====
+// kind: 'in' | 'out' | 'transfer' | 'xp' | 'info'
+// amount: число (или null); extra: текст, който замества сумата (напр. "+60 XP")
+function logEvent(icon, text, amount, kind, extra) {
+    const time = new Date().toLocaleString('bg-BG', {
+        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
+    appState.history.unshift({
+        icon: icon,
+        text: text,
+        amount: (amount === undefined ? null : amount),
+        kind: kind || 'info',
+        extra: extra || '',
+        time: time
+    });
+    if (appState.history.length > 200) appState.history.pop();
+    renderHistory();
+}
+
+function renderHistory() {
+    const box = document.getElementById('dash-history');
+    const count = document.getElementById('dash-history-count');
+    if (!box) return;
+
+    if (count) count.innerText = appState.history.length;
+
+    if (!appState.history.length) {
+        box.innerHTML = '<div class="history-empty">Все още няма движения.</div>';
+        return;
+    }
+
+    box.innerHTML = appState.history.map(h => {
+        let amt = h.extra;
+        if (!amt && h.amount !== null) {
+            amt = (h.amount < 0 ? '-' : (h.kind === 'in' ? '+' : '')) + fmtMoney(Math.abs(h.amount));
+        }
+        return `
+            <div class="history-item">
+                <span class="history-icon">${h.icon}</span>
+                <div class="history-main">
+                    <div class="history-text">${escapeHTML(h.text)}</div>
+                    <div class="history-time">${h.time}</div>
+                </div>
+                <span class="history-amt ${h.kind}">${escapeHTML(amt)}</span>
+            </div>`;
+    }).join('');
+}
+
+function accountName(id) {
+    const acc = getAccounts().find(a => a.id === id);
+    return acc ? acc.name : id;
+}
+
+// ===== Сметки и подсметки =====
+function fmtMoney(n) {
+    return (Math.round(n * 100) / 100) + ' €';
+}
+
+function getAccounts() {
+    return [
+        { id: 'main', name: 'Основна сметка', icon: '💳', balance: appState.freeBalance, locked: true },
+        { id: 'savings', name: 'Спестовен фонд', icon: '🛡️', balance: appState.savings, locked: true },
+        ...appState.subAccounts.map(a => ({ ...a, locked: false }))
+    ];
+}
+
+function getBalance(id) {
+    if (id === 'main') return appState.freeBalance;
+    if (id === 'savings') return appState.savings;
+    const acc = appState.subAccounts.find(a => a.id === id);
+    return acc ? acc.balance : 0;
+}
+
+function setBalance(id, value) {
+    value = Math.round(value * 100) / 100;
+    if (id === 'main') appState.freeBalance = value;
+    else if (id === 'savings') appState.savings = value;
+    else {
+        const acc = appState.subAccounts.find(a => a.id === id);
+        if (acc) acc.balance = value;
+    }
+}
+
+function subAccountsSummary() {
+    if (!appState.subAccounts.length) return '';
+    return '\n- Подсметки: ' + appState.subAccounts.map(a => `${a.name} (${fmtMoney(a.balance)})`).join(', ');
+}
+
+function updateDashboardNumbers() {
+    document.getElementById('dash-free-balance').innerText = fmtMoney(appState.freeBalance);
+    document.getElementById('dash-total-savings').innerText = fmtMoney(appState.savings);
+    checkLowBalanceAlert();
+}
+
+// Връща текст с грешка или null при успех
+function moveMoney(fromId, toId, amount) {
+    if (!appState.ready) return 'Първо попълни профила и влез в Банковото табло.';
+    if (fromId === toId) return 'Избери две различни сметки.';
+    if (isNaN(amount) || amount <= 0) return 'Въведи валидна сума.';
+    if (amount > getBalance(fromId)) return 'Недостатъчна наличност в избраната сметка.';
+
+    setBalance(fromId, getBalance(fromId) - amount);
+    setBalance(toId, getBalance(toId) + amount);
+    updateDashboardNumbers();
+
+    logEvent('🔄', `Прехвърляне: ${accountName(fromId)} ➡️ ${accountName(toId)}`, amount, 'transfer');
+
+    if (toId !== 'main') completeMission(1, 50);
+    return null;
+}
+
+function renderAccounts() {
+    const accounts = getAccounts();
+    let total = 0;
+
+    document.getElementById('accounts-list').innerHTML = accounts.map(a => {
+        total += a.balance;
+        return `
+            <div class="account-item">
+                <div class="account-left">
+                    <span class="account-icon">${a.icon}</span>
+                    <div>
+                        <div class="account-name">${escapeHTML(a.name)}</div>
+                        <div class="account-sub">${a.locked ? 'Системна сметка' : 'Подсметка'}</div>
+                    </div>
+                </div>
+                <div class="account-right">
+                    <span class="account-balance">${fmtMoney(a.balance)}</span>
+                    ${a.locked ? '' : `<button class="btn-delete" onclick="deleteSubAccount('${a.id}')">✕</button>`}
+                </div>
+            </div>`;
+    }).join('');
+
+    document.getElementById('acc-total').innerText = fmtMoney(total);
+
+    const options = accounts.map(a =>
+        `<option value="${a.id}">${a.icon} ${escapeHTML(a.name)} (${fmtMoney(a.balance)})</option>`
+    ).join('');
+
+    const from = document.getElementById('tr-from');
+    const to = document.getElementById('tr-to');
+    const prevFrom = from.value;
+    const prevTo = to.value;
+
+    from.innerHTML = options;
+    to.innerHTML = options;
+    from.value = accounts.some(a => a.id === prevFrom) ? prevFrom : 'main';
+    to.value = accounts.some(a => a.id === prevTo) ? prevTo : 'savings';
+
+    document.getElementById('acc-notice').style.display = appState.ready ? 'none' : 'block';
+}
+
+function transferFunds() {
+    const from = document.getElementById('tr-from').value;
+    const to = document.getElementById('tr-to').value;
+    const amount = parseFloat(document.getElementById('tr-amount').value);
+
+    const err = moveMoney(from, to, amount);
+    if (err) {
+        alert('⚠️ ' + err);
+        return;
+    }
+
+    document.getElementById('tr-amount').value = '';
+    renderAccounts();
+}
+
+function createSubAccount() {
+    if (!appState.ready) {
+        alert('⚠️ Първо попълни профила и влез в Банковото табло.');
+        return;
+    }
+
+    const name = document.getElementById('new-acc-name').value.trim();
+    const icon = document.getElementById('new-acc-icon').value;
+    const initial = parseFloat(document.getElementById('new-acc-amount').value) || 0;
+
+    if (!name) {
+        alert('Въведи име на подсметката!');
+        return;
+    }
+    if (appState.subAccounts.length >= 8) {
+        alert('Можеш да имаш най-много 8 подсметки.');
+        return;
+    }
+    if (initial < 0 || initial > appState.freeBalance) {
+        alert('Началната сума трябва да е между 0 и наличността в основната сметка.');
+        return;
+    }
+
+    const acc = { id: 'sub_' + Date.now(), name: name, icon: icon, balance: 0 };
+    appState.subAccounts.push(acc);
+    logEvent(icon, `Създадена подсметка „${name}“`, null, 'info');
+
+    if (initial > 0) moveMoney('main', acc.id, initial);
+
+    document.getElementById('new-acc-name').value = '';
+    document.getElementById('new-acc-amount').value = '';
+    renderAccounts();
+}
+
+function deleteSubAccount(id) {
+    const acc = appState.subAccounts.find(a => a.id === id);
+    if (!acc) return;
+
+    if (!confirm(`Да изтрия ли "${acc.name}"? ${fmtMoney(acc.balance)} ще се върнат в основната сметка.`)) return;
+
+    appState.freeBalance = Math.round((appState.freeBalance + acc.balance) * 100) / 100;
+    appState.subAccounts = appState.subAccounts.filter(a => a.id !== id);
+    logEvent('🗑️', `Изтрита подсметка „${acc.name}“, парите са върнати в основната сметка`, acc.balance, 'transfer');
+    updateDashboardNumbers();
+    renderAccounts();
+}
+
+function escapeHTML(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function addUnexpectedCost() {
+    let costName = prompt("Въведете описание на непредвидения разход:", "Спешен разход");
+    if (!costName) return;
+
+    let amountStr = prompt(`Въведете сума в евро (€) за "${costName}":`, "35");
+    let amount = parseFloat(amountStr);
+
+    if (isNaN(amount) || amount <= 0) {
+        alert("Моля въведете валидна сума!");
+        return;
+    }
+
+    appState.freeBalance -= Math.round(amount);
+    logEvent('🚨', `Непредвиден разход: ${costName}`, -Math.round(amount), 'out');
+    document.getElementById('dash-free-balance').innerText = appState.freeBalance + ' €';
+
+    let breakdownList = document.getElementById('dash-budget-breakdown');
+    let itemDiv = document.createElement('div');
+    itemDiv.className = 'budget-list-item';
+    itemDiv.style.color = '#F87171';
+    itemDiv.innerHTML = `<span>🚨 ${escapeHTML(costName)} (Непредвиден):</span><span style="font-weight:700;">-${amount} €</span>`;
+    breakdownList.appendChild(itemDiv);
+
+    checkLowBalanceAlert();
+}
+
+function completeMission(missionId, xpReward) {
+    let btn = document.getElementById(`m-btn-${missionId}`);
+    if (btn && btn.classList.contains('completed')) return;
+
+    if (btn) {
+        btn.innerText = '✓ Завършена';
+        btn.classList.add('completed');
+    }
+
+    if (appState.ready) {
+        const missionNames = { eco: 'Зелен Трафик', 1: 'Първи стъпки в спестяването', 3: 'Консултация с ИИ Ментор' };
+        logEvent('🎯', `Мисия изпълнена: ${missionNames[missionId] || missionId}`, null, 'xp', `+${xpReward} XP`);
+    }
+
+    addXP(xpReward);
+}
+
+function triggerPiggyBank() {
+    let amountStr = prompt("Колко € да преместиш от основната сметка в спестовния фонд?", "20");
+    if (amountStr === null) return;
+    let err = moveMoney('main', 'savings', parseFloat(amountStr));
+    if (err) {
+        alert('⚠️ ' + err);
+        return;
+    }
+    alert('💰 Средствата са прехвърлени в спестовния фонд!');
+}
+
+function addXP(amount) {
+    appState.xp += amount;
+    document.getElementById('user-xp').innerText = appState.xp;
+
+    let progress = (appState.xp % 100);
+    document.getElementById('xp-progress-bar').style.width = `${progress}%`;
+
+    let newLevel = Math.floor(appState.xp / 100) + 1;
+    if (newLevel > appState.level) {
+        appState.level = newLevel;
+        document.getElementById('user-level').innerText = appState.level;
+        alert(`🎉 Честито! Достигна Ниво ${appState.level}!`);
+    }
+
+    updateBadgesAndCert();
+}
+
+function updateBadgesAndCert() {
+    if (appState.xp >= 50) document.getElementById('badge-1').classList.add('unlocked');
+    if (appState.xp >= 100) document.getElementById('badge-2').classList.add('unlocked');
+    if (appState.xp >= 150) document.getElementById('badge-3').classList.add('unlocked');
+
+    if (appState.level >= 2) {
+        let cert = document.getElementById('cert-status');
+        cert.innerHTML = '🎓 АКТИВЕН & ПОТВЪРДЕН';
+        cert.style.background = 'rgba(52, 211, 153, 0.2)';
+        cert.style.color = 'var(--green-glow)';
+    }
+}
 
 function autoFillCityData() {
     let city = document.getElementById('cfg-city').value;
@@ -705,42 +1409,42 @@ function autoFillCityData() {
     let insName = document.getElementById('inp-ins-name');
 
     if (city === 'sofia') {
-        rentInput.value = 480;
-        foodInput.value = 300;
+        if (rentInput) rentInput.value = 480;
+        if (foodInput) foodInput.value = 300;
         appState.cityName = 'София';
     } else if (city === 'plovdiv') {
-        rentInput.value = 350;
-        foodInput.value = 240;
+        if (rentInput) rentInput.value = 350;
+        if (foodInput) foodInput.value = 240;
         appState.cityName = 'Пловдив/Варна';
     } else {
-        rentInput.value = 260;
-        foodInput.value = 200;
+        if (rentInput) rentInput.value = 260;
+        if (foodInput) foodInput.value = 200;
         appState.cityName = 'Областен град';
     }
 
-    if (transport === 'car') {
-        transName.value = "🚗 Гориво & Лична кола";
-        transVal.value = (city === 'sofia') ? 140 : 100;
-    } else if (transport === 'bus') {
-        transName.value = "🚌 Градски транспорт";
-        transVal.value = 25;
+    if (transport === 'bus') {
+        if (transName) transName.value = "🚌 Градски транспорт";
+        if (transVal) transVal.value = 25;
+    } else if (transport === 'walk') {
+        if (transName) transName.value = "🚲 Велосипед / Пеша";
+        if (transVal) transVal.value = 0;
     } else {
-        transName.value = "🚲 Велосипед / Пеша";
-        transVal.value = 0;
+        if (transName) transName.value = "🚗 Гориво & Лична кола";
+        if (transVal) transVal.value = (city === 'sofia') ? 140 : 100;
     }
 
     if (insurance === 'tech') {
-        insName.value = "📱 KBC Застраховка Джаджи";
-        insVal.value = 12;
+        if (insName) insName.value = "📱 KBC Застраховка Джаджи";
+        if (insVal) insVal.value = 12;
     } else if (insurance === 'travel') {
-        insName.value = "✈️ Allianz Пътуване";
-        insVal.value = 8;
+        if (insName) insName.value = "✈️ Allianz Пътуване";
+        if (insVal) insVal.value = 8;
     } else if (insurance === 'car_bulstrad') {
-        insName.value = "🚗 Bulstrad Автокаско";
-        insVal.value = 35;
+        if (insName) insName.value = "🚗 Bulstrad Автокаско";
+        if (insVal) insVal.value = 35;
     } else {
-        insName.value = "🛡️ Без застраховка";
-        insVal.value = 0;
+        if (insName) insName.value = "🛡️ Без застраховка";
+        if (insVal) insVal.value = 0;
     }
 }
 
@@ -761,6 +1465,13 @@ function generateDashboard() {
     let names = document.querySelectorAll('.cost-name');
     let vals = document.querySelectorAll('.cost-val');
 
+    let age = parseInt(document.getElementById('cfg-age').value, 10);
+
+    if (isNaN(age) || age < 14 || age > 100) {
+        alert("Моля въведете валидна възраст (14-100 години)!");
+        return;
+    }
+
     if (isNaN(income) || income <= 0) {
         alert("Моля въведете валиден доход!");
         return;
@@ -770,7 +1481,7 @@ function generateDashboard() {
     let breakdownHTML = '';
 
     for (let i = 0; i < names.length; i++) {
-        let n = names[i].value || 'Разход';
+        let n = escapeHTML(names[i].value || 'Разход');
         let v = parseFloat(vals[i].value) || 0;
         totalFixed += v;
         breakdownHTML += `
@@ -790,6 +1501,7 @@ function generateDashboard() {
     let savings = Math.round(leftover * 0.35);
     let freeBalance = leftover - savings;
 
+    appState.age = age;
     appState.income = income;
     appState.totalFixed = totalFixed;
     appState.savings = savings;
@@ -799,10 +1511,23 @@ function generateDashboard() {
     document.getElementById('dash-budget-breakdown').innerHTML = breakdownHTML;
     document.getElementById('dash-total-fixed').innerText = totalFixed + ' €';
     document.getElementById('dash-total-savings').innerText = savings + ' €';
-    document.getElementById('user-city-tag').innerText = `${appState.cityName} • Доход: ${income} €`;
+    document.getElementById('user-city-tag').innerText = `${appState.cityName} • ${age} г. • Доход: ${income} €`;
+
+    appState.subAccounts = [];
+    appState.history = [];
+    appState.ready = true;
+    logEvent('🚀', `Профилът е създаден. Доход ${fmtMoney(income)}, фиксирани разходи ${fmtMoney(totalFixed)}`, null, 'info');
+    logEvent('🛡️', 'Автоматично заделен спестовен фонд (35% от остатъка)', savings, 'in');
 
     switchView('screen-dashboard');
     updateActiveNavVisuals('dash');
+    checkLowBalanceAlert();
+
+    // Еко мисията се отключва само при влизане в таблото, не при всяка смяна на град
+    let transportChoice = document.getElementById('cfg-transport').value;
+    if (transportChoice === 'bus' || transportChoice === 'walk') {
+        completeMission('eco', 60);
+    }
 }
 
 function switchView(id) {
@@ -813,20 +1538,21 @@ function switchView(id) {
         'screen-survey': 'Настройка на профила',
         'screen-costs': 'Персонализирани разходи',
         'screen-dashboard': 'Банково Табло',
-        'screen-chat': 'AI Финансов Ментор'
+        'screen-missions': 'Мисии & Награди',
+        'screen-chat': 'AI Финансов Ментор',
+        'screen-accounts': 'Моите сметки'
     };
     document.getElementById('header-title').innerText = titleMap[id] || 'FinStart Bank';
+    if (id === 'screen-accounts') renderAccounts();
 }
 
 function switchNav(type) {
     updateActiveNavVisuals(type);
-    if (type === 'dash') {
-        switchView('screen-dashboard');
-    } else if (type === 'chat') {
-        switchView('screen-chat');
-    } else if (type === 'config') {
-        switchView('screen-survey');
-    }
+    if (type === 'dash') switchView('screen-dashboard');
+    else if (type === 'missions') switchView('screen-missions');
+    else if (type === 'chat') switchView('screen-chat');
+    else if (type === 'accounts') switchView('screen-accounts');
+    else if (type === 'config') switchView('screen-survey');
 }
 
 function updateActiveNavVisuals(type) {
@@ -836,16 +1562,23 @@ function updateActiveNavVisuals(type) {
     if (type === 'dash') {
         document.getElementById('side-dash')?.classList.add('active');
         document.getElementById('mob-dash')?.classList.add('active');
+    } else if (type === 'missions') {
+        document.getElementById('side-missions')?.classList.add('active');
+        document.getElementById('mob-missions')?.classList.add('active');
     } else if (type === 'chat') {
         document.getElementById('side-chat')?.classList.add('active');
         document.getElementById('mob-chat')?.classList.add('active');
+    } else if (type === 'accounts') {
+        document.getElementById('side-accounts')?.classList.add('active');
+        document.getElementById('mob-accounts')?.classList.add('active');
     } else if (type === 'config') {
         document.getElementById('side-config')?.classList.add('active');
         document.getElementById('mob-config')?.classList.add('active');
     }
 }
 
-function handleUserMessage() {
+// ===== Чат с AI =====
+async function handleUserMessage() {
     let inp = document.getElementById('chat-input-text');
     let text = inp.value.trim();
     if (!text) return;
@@ -853,10 +1586,23 @@ function handleUserMessage() {
     appendMsg(text, 'user');
     inp.value = '';
 
-    setTimeout(() => {
-        let reply = getSmartReply(text);
+    completeMission(3, 40);
+
+    let loadingDiv = document.createElement('div');
+    loadingDiv.className = 'msg-bubble bot';
+    loadingDiv.id = 'ai-loading';
+    loadingDiv.innerText = '🤔 ИИ мисли...';
+    document.getElementById('chat-box').appendChild(loadingDiv);
+
+    try {
+        let reply = await fetchRealAIResponse(text);
+        document.getElementById('ai-loading')?.remove();
         appendMsg(reply, 'bot');
-    }, 500);
+    } catch (error) {
+        console.error("AI API Error:", error);
+        document.getElementById('ai-loading')?.remove();
+        appendMsg(`⚠️ Грешка: ${error.message}`, 'bot');
+    }
 }
 
 function onChatKey(e) {
@@ -870,19 +1616,6 @@ function appendMsg(text, sender) {
     div.innerText = text;
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
-}
-
-function getSmartReply(q) {
-    let text = q.toLowerCase();
-    if (text.includes('телефон') || text.includes('купувам') || text.includes('лаптоп') || text.includes('пари')) {
-        return `В момента разполагаш с ${appState.freeBalance} € свободен финансов ресурс. Покупката е възможна, но съветвам да запазиш поне 30% буфер за непредвидени ситуации.`;
-    } else if (text.includes('спестявания') || text.includes('фонд') || text.includes('касичка')) {
-        return `В момента ИИ заделя по ${appState.savings} € месечно. За 1 година това ще изгради финансов буфер от над ${appState.savings * 12} €!`;
-    } else if (text.includes('наем') || text.includes('град') || text.includes('софия')) {
-        return `Бюджетът ти е съобразен със стандарта на живот в ${appState.cityName}. Фиксираните ти разходи са ${appState.totalFixed} € месечно.`;
-    } else {
-        return `Анализирах профила ти: Всички сметки и застраховки са покрити. Оставям ти ${appState.freeBalance} € чисто за лични удоволствия. С какво друго мога да помогна?`;
-    }
 }
 </script>
 
