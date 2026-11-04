@@ -674,10 +674,10 @@
             <h3 style="margin:0; color: var(--bg-cream); font-size: 18px;" id="header-title">Настройка на профила</h3>
             <div class="header-user">
                 <div style="text-align: right; font-size: 13px;">
-                    <div style="font-weight: 700; color: var(--text-light);">FinStart dev acc</div>
+                    <div style="font-weight: 700; color: var(--text-light);">Александър Попов</div>
                     <div style="color: var(--teal-accent); font-size: 11px;" id="user-city-tag">София • Младежки профил</div>
                 </div>
-                <div class="user-avatar">FS</div>
+                <div class="user-avatar">АП</div>
             </div>
         </div>
 
@@ -958,6 +958,7 @@
                     <div class="chat-header-bar">
                         <div class="chat-status-dot"></div>
                         <span style="font-size: 14px; font-weight: 700; color: var(--bg-cream);">FinStart AI Green Advisor</span>
+                        <button onclick="setApiKey()" style="margin-left:auto; background:rgba(128,188,189,0.15); color:var(--teal-accent); border:1px solid rgba(128,188,189,0.3); border-radius:10px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer;">🔑 API ключ</button>
                     </div>
                     <div class="chat-body" id="chat-box">
                         <div class="msg-bubble bot">
@@ -1014,6 +1015,52 @@ let appState = {
     level: 1
 };
 
+// ===== AI настройки (OpenRouter) =====
+// В кода НЯМА API ключ, затова файлът е безопасен за GitHub.
+//
+// Начин 1 (по подразбиране): всеки потребител натиска "🔑 API ключ" в AI чата
+// и поставя свой ключ от https://openrouter.ai/keys. Ключът се пази само
+// в неговия браузър (localStorage) и никога не е в хранилището.
+//
+// Начин 2 (препоръчан за публичен сайт): сложи адреса на свой прокси
+// (напр. Cloudflare Worker), който държи ключа на сървъра. Тогава не е нужен ключ в браузъра.
+const PROXY_URL = ""; // напр. "https://finstart-ai.твоето-име.workers.dev"
+
+// Безплатните модели се сменят. "openrouter/free" сам избира наличен безплатен модел.
+const MODEL = "openrouter/free";
+
+const KEY_STORAGE = "finstart_api_key";
+
+function getApiKey() {
+    try { return localStorage.getItem(KEY_STORAGE) || ""; } catch (e) { return ""; }
+}
+
+function setApiKey() {
+    const current = getApiKey();
+    const val = prompt(
+        "Постави своя OpenRouter API ключ (започва с sk-or-).\n" +
+        "Пази се само в този браузър. Остави празно, за да го изтриеш.",
+        current
+    );
+    if (val === null) return;
+    try {
+        if (val.trim()) {
+            localStorage.setItem(KEY_STORAGE, val.trim());
+            alert("✅ Ключът е запазен в този браузър.");
+        } else {
+            localStorage.removeItem(KEY_STORAGE);
+            alert("Ключът е изтрит.");
+        }
+    } catch (e) {
+        alert("⚠️ Браузърът не позволява запис на ключа.");
+    }
+}
+
+async function fetchRealAIResponse(userQuery) {
+    const apiKey = getApiKey();
+    if (!PROXY_URL && !apiKey) {
+        throw new Error("Липсва API ключ. Натисни бутона „🔑 API ключ“ в горния десен ъгъл на чата и го постави.");
+    }
 
     const systemContext = `Ти си FinStart AI Green Advisor - финансов и екологичен ментор за младежи (18-25г.).
 Данни за бюджета на потребителя:
@@ -1029,13 +1076,15 @@ let appState = {
 2. Сравни вноската със свободния баланс и кажи дали е възможно без риск.
 3. Отговаряй на български, кратко (2-3 изречения), дружелюбно, с емоджита.`;
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const headers = { "Content-Type": "application/json" };
+    if (!PROXY_URL) {
+        headers["Authorization"] = `Bearer ${apiKey}`;
+        headers["X-Title"] = "FinStart";
+    }
+
+    const response = await fetch(PROXY_URL || "https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}`,
-            "X-Title": "FinStart"
-        },
+        headers: headers,
         body: JSON.stringify({
             model: MODEL,
             messages: [
@@ -1059,6 +1108,7 @@ let appState = {
     const text = data.choices?.[0]?.message?.content;
     if (!text) throw new Error("Няма върнат отговор от модела.");
     return text;
+}
 
 // ===== Зелени съвети =====
 const aiTips = [
